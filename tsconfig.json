@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "lib": [
+            "dom",
+            "es2015",
+            "webworker",
+        ],
+        "target": "es5",
+        "jsx": "react"
+    }
+}
