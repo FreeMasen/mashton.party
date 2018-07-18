@@ -8,5 +8,14 @@ export default class Party {
         public place: Place,
         public snippet: string,
         public description: string,
+        public imagePath: string,
+        public rsvpList?: Array<RSVP>
+    ) {}
+}
+
+export class RSVP {
+    constructor(
+        public name: string,
+        public bringing?: string,
     ) {}
 }
