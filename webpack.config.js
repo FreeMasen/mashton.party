@@ -29,9 +29,7 @@ module.exports = function(env) {
         }
     } else {
         ret.mode = 'production';
-        ret.plugins = [
-            new wp.optimize.UglifyJsPlugin()
-        ]
+        ret.optimization.minimize = true;
     }
     return ret;
 }
