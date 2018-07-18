@@ -1,4 +1,5 @@
 const path = require('path');
+const wp = require('webpack');
 module.exports = function(env) {
     let ret = {};
     ret.entry = {
@@ -24,9 +25,13 @@ module.exports = function(env) {
         ret.devtool = 'sourcemap';
         ret.devServer = {
             historyApiFallback: true,
+            publicPath: '/js/',
         }
     } else {
         opts.mode = 'production';
+        opts.plugins = [
+            new wp.optimize.UglifyJsPlugin()
+        ]
     }
     return ret;
 }
