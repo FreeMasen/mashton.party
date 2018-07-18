@@ -28,8 +28,8 @@ module.exports = function(env) {
             publicPath: '/js/',
         }
     } else {
-        opts.mode = 'production';
-        opts.plugins = [
+        ret.mode = 'production';
+        ret.plugins = [
             new wp.optimize.UglifyJsPlugin()
         ]
     }
