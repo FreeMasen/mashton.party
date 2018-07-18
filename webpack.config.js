@@ -29,7 +29,6 @@ module.exports = function(env) {
         }
     } else {
         ret.mode = 'production';
-        ret.optimization.minimize = true;
     }
     return ret;
 }
