@@ -8,6 +8,7 @@ interface PartySummaryProps {
 interface PartySummaryState {
     hover: boolean;
 }
+/**The character limit for the party summary's title*/
 const titleLimit = 17;
 export default class PartySummary extends React.Component<PartySummaryProps, PartySummaryState> {
     constructor(props) {
@@ -18,15 +19,7 @@ export default class PartySummary extends React.Component<PartySummaryProps, Par
     }
     render() {
         let {party} = this.props;
-        let title = party.name.trim();
-        if (title.length > titleLimit) {
-            let trunc = title.substr(0, titleLimit);
-            let lastSpace = trunc.lastIndexOf(' ')
-            if (lastSpace > -1) {
-                trunc = trunc.substring(0, lastSpace);
-            }
-            title = `${trunc}...`;
-        }
+        let title = this.formatTitle(party.name);
         return (
             <div className="event-list-item"
                 style={{
@@ -57,9 +50,9 @@ export default class PartySummary extends React.Component<PartySummaryProps, Par
                         color: (this.state.hover ? Colors.accent : Colors.white).toString(),
                     }}
                 >
-                    <h2>{title}</h2>
-                    <span>{party.date.format('ddd M/D/YYYY h:mm a')}</span>
-                    <h3>{party.snippet}</h3>
+                    <h2 style={{color: (this.state.hover ? Colors.accent : Colors.white).toString()}}>{title}</h2>
+                    <span style={{color: (this.state.hover ? Colors.accent : Colors.white).toString()}}>{party.date.format('ddd M/D/YYYY h:mm a')}</span>
+                    <h3 style={{color: (this.state.hover ? Colors.accent : Colors.white).toString()}}>{party.snippet}</h3>
                 </div>
                 <div className="event-list-item-image"
                     style={{
@@ -74,5 +67,24 @@ export default class PartySummary extends React.Component<PartySummaryProps, Par
                 </div>
             </div>
         )
+    }
+    /**format the party's name for displaying */
+    formatTitle(title: string): string {
+        title = title.trim();
+        //if the title is longer than the length
+        if (title.length > titleLimit) {
+            //truncate it to the limit
+            let trunc = title.substr(0, titleLimit);
+            //find the last space in the title
+            let lastSpace = trunc.lastIndexOf(' ')
+            //if there is a space
+            if (lastSpace > -1) {
+                //trim to that space
+                trunc = trunc.substring(0, lastSpace);
+            }
+            //Add an ellipsis to
+            title = `${trunc}...`;
+        }
+        return title;
     }
 }

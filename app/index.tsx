@@ -20,7 +20,6 @@ class App extends React.Component<{}, AppState> {
     data: Data;
     constructor(props) {
         super(props);
-        console.log('rendering App');
         this.state = new AppState();
         this.data = new Data();
         this.data.getPartyList().then(parties => this.init(parties));
@@ -30,7 +29,6 @@ class App extends React.Component<{}, AppState> {
     init(parties: Array<Party>) {
         let selectedParty;
         let pathName = Path.partyName();
-        console.log('party name: ', pathName);
         if (pathName) {
             selectedParty = parties.find(p => p.name.toLowerCase().replace(/\s/g, '-') == pathName);
         }
@@ -56,7 +54,9 @@ class App extends React.Component<{}, AppState> {
                         background: Colors.primary.toString(),
                         color: Colors.white.toString(),
                         fontSize: 48,
+                        cursor: 'pointer',
                     }}
+                    onClick={_ => Path.root()}
                 >
                     <div id="header-animation-container"
                         style={{
@@ -79,6 +79,7 @@ class App extends React.Component<{}, AppState> {
     }
 
     pickContents(): JSX.Element {
+        window.scroll(0,0);
         if (this.state.isLoading) {
             return (
                 <LoadingSpinner />
@@ -102,17 +103,6 @@ class App extends React.Component<{}, AppState> {
             this.setState({selectedParty: this.state.parties.find(p => p.id == partyInfo.partyId)});
         } else {
             this.setState({selectedParty: null});
-        }
-    }
-
-    updateRoute(route: Route, party?: Party) {
-        switch (route) {
-            case Route.Root:
-                Path.root()
-            break;
-            case Route.Party:
-                if (!party) return;
-                Path.party(party)
         }
     }
 }

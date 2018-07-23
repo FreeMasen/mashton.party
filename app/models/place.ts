@@ -1,3 +1,4 @@
+/**The description of a party's location */
 export default class Place {
     constructor(
         public name: string,

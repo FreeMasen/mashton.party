@@ -22,7 +22,7 @@ export default class PartyList extends React.Component<PartyListProps, {}> {
                     alignItems: 'center',
                     alignContent: 'flex-start',
                     minHeight: 100,
-                    color: Colors.black.toString(),
+                    color: Colors.accent.toString(),
                 }}
             >
                 <div className="events-header"
