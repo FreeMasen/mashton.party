@@ -111,7 +111,10 @@ enum Route {
     Root,
     Party,
 }
-
-ReactDom.render((
-    <App />
-), document.getElementById('app'))
+try {
+    ReactDom.render((
+        <App />
+    ), document.getElementById('app'))
+} catch (e) {
+    alert(e.msg);
+}
