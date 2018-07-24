@@ -4,6 +4,8 @@ import { Moment } from '../../node_modules/moment';
 import Place from '../models/place';
 import Dates from '../services/dates';
 import Colors from '../services/colors';
+import RsvpList from './rsvp';
+import { Rsvp } from '../models/party'
 interface PartyDescriptionProps {
     party: Party;
 }
@@ -39,7 +41,10 @@ export default class PartyDescription extends React.Component<PartyDescriptionPr
                         date={this.props.party.date}
                         place={this.props.party.place}
                         description={this.props.party.description}
+                        rsvpTitle={this.props.party.rsvpItem}
+                        rsvpList={this.props.party.rsvpList}
                     />
+                    
                 </div>
             </div>
         )
@@ -50,6 +55,8 @@ interface PartyDetailsProps {
     date: Moment;
     place: Place;
     description: string;
+    rsvpTitle?: string;
+    rsvpList?: Array<Rsvp>;
 }
 interface PartyDetailsState {
 
@@ -84,10 +91,25 @@ class PartyDetails extends React.Component<PartyDetailsProps, PartyDetailsState>
                         place={this.props.place}
                     />
                     {subTitle('Details')}
-                    <div className="party-details">
+                    <div className="party-details"
+                        style={{paddingTop: 10, paddingBottom: 10}}
+                    >
                         {this.props.description}
                     </div>
                 </div>
+                {this.props.rsvpTitle ? 
+                    <div>
+                        {subTitle('RSVP')}
+                        <RsvpList
+                            rsvpItem={this.props.rsvpTitle}
+                            rsvpList={this.props.rsvpList}
+                            rsvpFormBringing=""
+                            rsvpFormName=""
+                            displayRsvpForm={true}
+                            displayRsvpList={true}
+                        />
+                    </div>
+                : null}
             </div>
         )
     }
@@ -96,13 +118,14 @@ class PartyDetails extends React.Component<PartyDetailsProps, PartyDetailsState>
 const subTitle = (name: string) => {
     return [
         <h3
+            key={`header-${name.toLowerCase().replace(/\s/g, '-')}`}
             style={{
                 color: Colors.black.toString(),
             }}
         >
             {name}
         </h3>,
-        <hr style={{marginTop: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: `1px solid ${Colors.accent.toString()}`}} />
+        <hr key={`hr-${name.toLowerCase().replace(/\s/g, '-')}`} style={{margin: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: `1px solid ${Colors.accent.toString()}`}} />
     ]
 }
 
@@ -118,6 +141,7 @@ class DateComponent extends React.Component<{date: Moment}, {}> {
                     alignItems: 'center',
                     alignContent: 'flex-start',
                     color: Colors.black.toString(),
+                    paddingTop: 10,
                 }}
             >
                 <div className="date-part">
@@ -142,6 +166,7 @@ class PlaceComponent extends React.Component<{place: Place}, {}> {
                 style={{
                     display: 'flex',
                     flexFlow: 'column',
+                    paddingTop: 10,
                 }}
             >
                 <span className="place-title">{this.props.place.name}</span>

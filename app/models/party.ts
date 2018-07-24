@@ -34,7 +34,11 @@ export class Rsvp {
         public id: number,
         /**The name of the guest */
         public name: string,
+        /**If this guest can make it */
+        public attending: boolean,
         /**The item this guest is bringing */
         public bringing?: string,
+        /**A short message about their response */
+        public message?: string,
     ) {}
 }

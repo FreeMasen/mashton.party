@@ -18,7 +18,7 @@ export class FormattedDate {
     ) {}
 
     get month(): string {
-        return (this.dt.month() - 1).toString();
+        return (this.dt.month()+1).toString();
     }
     get day(): string {
         return this.dt.date().toString();

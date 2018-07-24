@@ -1,4 +1,4 @@
-import Party from '../models/party';
+import Party, { Rsvp } from '../models/party';
 import * as moment from 'moment';
 import Place from '../models/place';
 const mockParties = [
@@ -91,6 +91,9 @@ const mockParties = [
         'Eat stuff with mustard on it',
         'Must bring your own mustard',
         `img/9.jpg`,
+        [new Rsvp(0, 'Joe Mollen', true, 'Beez Neez Honey Mustard'),
+        new Rsvp(1, 'Christine Mollen', true, 'Curry Mustard')],
+        'Mustard'
     ),
     new Party(
         10,
@@ -105,6 +108,8 @@ const mockParties = [
         'Toit Nups',
         'dinner, dancing, drinking, celebrating',
         `img/10.jpg`,
+        [],
+        "+1"
     )
 ]
 /**The network/data service */
