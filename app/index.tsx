@@ -33,7 +33,10 @@ class App extends React.Component<{}, AppState> {
             selectedParty = parties.find(p => p.name.toLowerCase().replace(/\s/g, '-') == pathName);
         }
         Path.init(selectedParty);
-        this.setState({parties, isLoading: false, selectedParty});
+
+        this.setState(_ => {
+            return {parties, isLoading: false, selectedParty}
+        });
     }
 
     render() {
@@ -86,9 +89,11 @@ class App extends React.Component<{}, AppState> {
             )
         }
         if (Path.atRoot()) {
+            let upcoming = this.state.parties.filter(p => p.date > Dates.tomorrow);
+            let past = this.state.parties.filter(p => p.date <= Dates.tomorrow);
             return (<Dashboard
-                upcoming={this.state.parties.filter(p => p.date > Dates.tomorrow)}
-                past={this.state.parties.filter(p => p.date <= Dates.tomorrow)}
+                upcoming={upcoming}
+                past={past}
             />)
         }
         return (
@@ -107,14 +112,6 @@ class App extends React.Component<{}, AppState> {
     }
 }
 
-enum Route {
-    Root,
-    Party,
-}
-try {
-    ReactDom.render((
-        <App />
-    ), document.getElementById('app'))
-} catch (e) {
-    alert(e.msg);
-}
+ReactDom.render((
+    <App />
+), document.getElementById('app'))

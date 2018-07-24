@@ -5,7 +5,7 @@ const mockParties = [
     new Party(
         0,
         'Warriors B-day',
-        moment('2010-1-31T22:00'),
+        moment('2010-01-31T22:00-06:00'),
         new Place('Washington House'),
         'My first b-day party in MN',
         'Small group of people + 2 out of towners',
@@ -14,7 +14,7 @@ const mockParties = [
     new Party(
         1,
         'Spring has Sprung',
-        moment('2011-4-12T12:00'),
+        moment('2011-04-12T12:00-06:00'),
         new Place('Nash and Molly\'s'),
         'An attempt to celebrate the warmer weather',
         'It snowed that day...',
@@ -23,7 +23,7 @@ const mockParties = [
     new Party(
         2,
         '4th of July',
-        moment('2012-7-4T12:00'),
+        moment('2012-07-04T12:00-06:00'),
         new Place('Elliot street house'),
         'Grilling and Water balloons',
         'It was so freaking hot that day',
@@ -32,7 +32,7 @@ const mockParties = [
     new Party(
         3,
         'Moon Parties',
-        moment('2013-6-30T20:00'),
+        moment('2013-06-30T20:00-06:00'),
         new Place('The Moon'),
         'We had quite a few parties',
         'I don\'t remember what they all were for',
@@ -41,7 +41,7 @@ const mockParties = [
     new Party(
         4,
         'Pizza-Mas',
-        moment('2014-4-15T20:00'),
+        moment('2014-04-15T20:00-06:00'),
         new Place('The Moon'),
         'We enjoyed lots of pizza',
         'it continues',
@@ -50,7 +50,7 @@ const mockParties = [
     new Party(
         5,
         'Bearded Lady Motorcycle freakshow',
-        moment('2015-5-1T12:00'),
+        moment('2015-05-01T12:00-06:00'),
         new Place('University House'),
         'Sat in the yard and had some beers',
         'it was fun!',
@@ -59,7 +59,7 @@ const mockParties = [
     new Party(
         6,
         'House Warming Party',
-        moment('2016-8-1T12:00'),
+        moment('2016-08-01T12:00-06:00'),
         new Place('Quincy House'),
         'Back yard potluck',
         'we made way too much food',
@@ -68,7 +68,7 @@ const mockParties = [
     new Party(
         7,
         'Pizza Birthday',
-        moment('2017-1-20T20:00'),
+        moment('2017-01-20T20:00-06:00'),
         new Place('Quincy House'),
         'Made pizza for people for my birthday',
         'mmmmmmm..... pizzzzzaaaaa',
@@ -77,7 +77,7 @@ const mockParties = [
     new Party(
         8,
         'House Warming frreal',
-        moment('2017-7-1T12:00'),
+        moment('2017-07-01T12:00-06:00'),
         new Place('Mashton Manor'),
         'Back yard hangouts with our friends',
         'We own a home!',
@@ -86,7 +86,7 @@ const mockParties = [
     new Party(
         9,
         'Mustard Party',
-        moment('2018-1-31T20:00'),
+        moment('2018-01-31T20:00-06:00'),
         new Place('Masthon Manor'),
         'Eat stuff with mustard on it',
         'Must bring your own mustard',
@@ -98,7 +98,7 @@ const mockParties = [
     new Party(
         10,
         'Our Wedding',
-        moment('2019-9-21T18:00'),
+        moment('2019-09-21T18:00-06:00'),
         new Place('The Food Building',
             '1401 Marshall St. NE',
             'Minneapolis',
