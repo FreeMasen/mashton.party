@@ -1,15 +1,16 @@
 import * as React from  'react';
-import { Rsvp } from '../models/party';
+import Rsvp from '../models/rsvp';
 import Colors from '../services/colors';
 import Input from './input';
+import Checkbox from './checkbox';
 
 interface RsvpListProps {
     rsvpItem: string;
     rsvpList: Array<Rsvp>;
     displayRsvpList: boolean;
     displayRsvpForm: boolean;
-    rsvpFormName?: string;
-    rsvpFormBringing?: string;
+    userRsvp?: Rsvp;
+    userRsvpSaveHandler: (rsvp: Rsvp) => void;
 }
 
 interface RsvpListState {
@@ -18,7 +19,8 @@ interface RsvpListState {
 
 export default class RsvpList extends React.Component<RsvpListProps, RsvpListState> {
     render() {
-        let list = this.props.rsvpList.length > 0 ? this.props.rsvpList : [new Rsvp(-1, " ", false, " ")];
+        console.log('RsvpList', this.props.rsvpList);
+        let list = this.props.rsvpList.length > 0 ? this.props.rsvpList : [new Rsvp(-1, " ", false, -1, " ")];
         return (
             <div className="rsvp-list"
                 style={{
@@ -36,21 +38,22 @@ export default class RsvpList extends React.Component<RsvpListProps, RsvpListSta
                     }}
                 >
                 <tbody>
-                    {this.props.displayRsvpList ? 
+                    {this.props.displayRsvpList ?
                         <RsvpHeader
                             lhs="Name"
                             rhs={this.props.rsvpItem}
                         />
                     : null}
-                    {this.props.displayRsvpList ? list.map(r => {
+                    {list.map(r => {
                         return (<RsvpListItem
                             key={`rsvp-list-item-${r.id}`}
                             name={r.name}
+                            attending={r.attending}
                             bringing={r.bringing}
+                            isBlank={this.props.rsvpList.length < 1}
                         />)
-                    })
-                    : null}
-                    {this.props.displayRsvpForm ? 
+                    })}
+                    {this.props.displayRsvpForm ?
                         <RsvpHeader
                             lhs="Your Name"
                             rhs={this.props.rsvpItem != undefined ? `Your ${this.props.rsvpItem}` : undefined}
@@ -58,8 +61,10 @@ export default class RsvpList extends React.Component<RsvpListProps, RsvpListSta
                     : null}
                     {this.props.displayRsvpForm ? 
                         <RsvpForm
-                            name={this.props.rsvpFormName}
-                            bringing={this.props.rsvpFormBringing}
+                            name={this.props.userRsvp ? this.props.userRsvp.name : ''}
+                            bringing={this.props.userRsvp ? this.props.userRsvp.bringing : ''}
+                            attending={this.props.userRsvp ? this.props.userRsvp.attending : false}
+                            saveHandler={(n, a, b) => this.saveUserRsvp(n, a, b)}
                         />
                     : null}
                 </tbody>
@@ -67,10 +72,17 @@ export default class RsvpList extends React.Component<RsvpListProps, RsvpListSta
             </div>
         );
     }
+
+    saveUserRsvp(name: string, attending: boolean, bringing?: string) {
+        let newRsvp = Object.assign({}, this.props.userRsvp, {name, attending, bringing});
+        this.props.userRsvpSaveHandler(newRsvp);
+    }
 }
 
 interface RsvpListItemProps {
+    isBlank: boolean;
     name: string;
+    attending: boolean;
     bringing?: string;
 }
 
@@ -87,6 +99,16 @@ class RsvpListItem extends React.Component<RsvpListItemProps, RsvpListItemState>
                     height: 25
                 }}
             >
+                <td>
+                    {this.props.isBlank ? null :
+                        <Checkbox
+                            initiallyChecked={this.props.attending}
+                            style={{
+                                margin: 'auto'
+                            }}
+                        />
+                    }
+                </td>
                 <td
                     style={{
                         height: 25
@@ -101,7 +123,9 @@ class RsvpListItem extends React.Component<RsvpListItemProps, RsvpListItemState>
 }
 interface RsvpFormProps {
     name: string;
+    attending: boolean;
     bringing?: string;
+    saveHandler: (name: string, attending: boolean, bringing?: string) => void;
 }
 interface RsvpFormState {
 
@@ -110,13 +134,23 @@ interface RsvpFormState {
 class RsvpForm extends React.Component<RsvpFormProps, RsvpFormState> {
     nameInput: HTMLInputElement;
     bringingInput: HTMLInputElement;
+    attendingInput: Checkbox;
     render() {
         return (
             <tr className="rsvp-form" style={{marginTop: 10}}>
+            <td>
+                <Checkbox
+                    initiallyChecked={this.props.attending}
+                    ref={i => this.attendingInput = i}
+                    style={{
+                        margin: 'auto',
+                    }}
+                />
+            </td>
                 <td>
-                    <Input 
-                        type="text" 
-                        refFn={i => this.nameInput = i} 
+                    <Input
+                        type="text"
+                        refFn={i => this.nameInput = i}
                         defaultValue={this.props.name}
                         style={{
                             width: '100%',
@@ -131,6 +165,7 @@ class RsvpForm extends React.Component<RsvpFormProps, RsvpFormState> {
                             style={{
                                 width: '100%',
                             }}
+                            defaultValue={this.props.bringing}
                         />
                     </td>
                 : null}
@@ -145,10 +180,18 @@ class RsvpForm extends React.Component<RsvpFormProps, RsvpFormState> {
                                 boxShadow: `1px 1px 1px 1px ${Colors.grey.toString()}`,
                                 fontSize: '15pt',
                             }}
+                            onClick={_ => this.save()}
                     >Save</button>
                 </td>
             </tr>
         );
+    }
+
+    save() {
+        let name = this.nameInput ? this.nameInput.value : this.props.name
+        let attending = this.attendingInput ? this.attendingInput.checked : this.props.attending;
+        let bringing = this.bringingInput ? this.bringingInput.value : this.props.bringing;
+        this.props.saveHandler(name, attending, bringing);
     }
 }
 interface RsvpHeaderProps {
@@ -170,10 +213,13 @@ export class RsvpHeader extends React.Component<RsvpHeaderProps, RsvpHeaderState
             >
                 <th
                     style={{paddingTop: 10}}
-                >{this.props.lhs}</th>
+                >Attending</th>
+                <th
+                style={{paddingTop: 10}}>{this.props.lhs}</th>
                 {
                     this.props.rhs !== undefined ?
-                    <th>{this.props.rhs}</th>
+                    <th
+                    style={{paddingTop: 10}}>{this.props.rhs}</th>
                     : null
                 }
             </tr>

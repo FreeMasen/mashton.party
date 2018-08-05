@@ -28,6 +28,20 @@ export default class Path {
         return history.state.id as number;
     }
     /**
+     * Extract the id of our current invitation
+     */
+    static inviteId?(): string {
+        let q = location.search;
+        let target = 'token=';
+        let tokenIdx = q.indexOf(target);
+        if (tokenIdx < 0) return;
+        q = q.substr(tokenIdx+target.length);
+        let endIdx = q.indexOf('&') + 1;
+        if (endIdx < 1) endIdx = q.length;
+        let ret = q.substring(0, endIdx);
+        return ret;
+    }
+    /**
      * Checks if we are currently at the site's root
      */
     static atRoot(): boolean {
@@ -88,11 +102,14 @@ export default class Path {
  * The history api components
  */
 class HistoryEntry {
+    public path: string;
     constructor(
         public state: HistoryState = new HistoryState(),
         public title: string = 'Party with the Mashtons!',
-        public path: string = '/',
-    ) {}
+        path: string = '/',
+    ) {
+        this.path = `${path}${location.search}`
+    }
     /**
      * Alternative constructor for history updates
      * @param p {Party} - The party for this change

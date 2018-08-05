@@ -26,6 +26,15 @@ module.exports = function(env) {
         ret.devServer = {
             historyApiFallback: true,
             publicPath: '/js/',
+            proxy: {
+                '/api': {
+                   target: {
+                      host: "0.0.0.0",
+                      protocol: 'http:',
+                      port: 8888
+                   },
+                }
+            }
         }
     } else {
         ret.mode = 'production';

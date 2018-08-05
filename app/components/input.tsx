@@ -35,7 +35,8 @@ export default class Input extends React.Component<InputProps, InputState> {
                     className={this.props.className}
                     style={Object.assign({
                         border: 'none',
-                        background: Colors.white.toString(),
+                        background: 'white',
+                        fontSize: '16pt',
                     },this.props.style)}
                     defaultValue={this.props.defaultValue}
                     ref={this.props.refFn ? i => this.props.refFn(i) : null}

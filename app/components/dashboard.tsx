@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Party from '../models/party';
-import PartyList from './eventList';
+import PartyList from './partyList';
 interface DashboardProps {
     upcoming: Array<Party>;
     past: Array<Party>;

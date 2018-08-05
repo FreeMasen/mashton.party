@@ -11,7 +11,6 @@ interface PartyListProps {
 
 export default class PartyList extends React.Component<PartyListProps, {}> {
     render() {
-        console.log('rendering EventList', this.props);
         let events = this.props.parties;
         return (
             <div id="event-list"

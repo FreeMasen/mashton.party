@@ -1,19 +1,22 @@
 import * as React from 'react';
 import Party from '../models/party';
-import { Moment } from '../../node_modules/moment';
+import { Moment } from 'moment';
 import Place from '../models/place';
 import Dates from '../services/dates';
 import Colors from '../services/colors';
-import RsvpList from './rsvp';
-import { Rsvp } from '../models/party'
+import RsvpList from './rsvpList';
+import Rsvp from '../models/rsvp'
 interface PartyDescriptionProps {
     party: Party;
+    userRsvp?: Rsvp;
+    userRsvpSaveHandler: (rsvp: Rsvp) => void;
 }
 interface PartyDescriptionState {
 
 }
 export default class PartyDescription extends React.Component<PartyDescriptionProps, PartyDescriptionState> {
     render() {
+        console.log('PartyDescriptionProps.party', this.props.party);
         return (
             <div>
                 <div
@@ -43,6 +46,8 @@ export default class PartyDescription extends React.Component<PartyDescriptionPr
                         description={this.props.party.description}
                         rsvpTitle={this.props.party.rsvpItem}
                         rsvpList={this.props.party.rsvpList}
+                        userRsvp={this.props.userRsvp}
+                        userRsvpSaveHandler={rsvp => this.props.userRsvpSaveHandler(rsvp)}
                     />
                     
                 </div>
@@ -57,12 +62,15 @@ interface PartyDetailsProps {
     description: string;
     rsvpTitle?: string;
     rsvpList?: Array<Rsvp>;
+    userRsvp?: Rsvp;
+    userRsvpSaveHandler: (rsvp: Rsvp) => void;
 }
 interface PartyDetailsState {
 
 }
 class PartyDetails extends React.Component<PartyDetailsProps, PartyDetailsState> {
     render() {
+        console.log('new PartyDetails', this.props.userRsvp);
         return(
             <div className="party-details"
                 style={{
@@ -103,10 +111,10 @@ class PartyDetails extends React.Component<PartyDetailsProps, PartyDetailsState>
                         <RsvpList
                             rsvpItem={this.props.rsvpTitle}
                             rsvpList={this.props.rsvpList}
-                            rsvpFormBringing=""
-                            rsvpFormName=""
-                            displayRsvpForm={true}
-                            displayRsvpList={true}
+                            userRsvp={this.props.userRsvp}
+                            displayRsvpForm={this.props.userRsvp != undefined || this.props.userRsvp != null}
+                            displayRsvpList={this.props.userRsvp != undefined || this.props.userRsvp != null}
+                            userRsvpSaveHandler={rsvp => this.props.userRsvpSaveHandler(rsvp)}
                         />
                     </div>
                 : null}

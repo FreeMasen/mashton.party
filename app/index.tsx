@@ -4,8 +4,10 @@ import Dashboard from './components/dashboard';
 import Colors from './services/colors';
 import Path, { HistoryState } from './services/path';
 import Party from './models/party';
+import Guest from './models/user';
 import Data from './services/data';
 import Dates from './services/dates';
+import Rsvp from './models/rsvp';
 import LoadingSpinner from './components/loadingSpinner';
 import PartyDescription from './components/partyDescription';
 
@@ -14,8 +16,10 @@ class AppState {
         public isLoading = true,
         public parties: Array<Party> = [],
         public selectedParty?: Party,
+        public guest?: Guest,
     ){}
 }
+
 class App extends React.Component<{}, AppState> {
     data: Data;
     constructor(props) {
@@ -23,19 +27,22 @@ class App extends React.Component<{}, AppState> {
         this.state = new AppState();
         this.data = new Data();
         this.data.getPartyList().then(parties => this.init(parties));
-        Path.registerListener(state => this.routeChanted(state));
+        Path.registerListener(state => this.routeChanged(state));
     }
 
-    init(parties: Array<Party>) {
+    async init(parties: Array<Party>) {
         let selectedParty;
         let pathName = Path.partyName();
         if (pathName) {
             selectedParty = parties.find(p => p.name.toLowerCase().replace(/\s/g, '-') == pathName);
         }
         Path.init(selectedParty);
-
-        this.setState(_ => {
-            return {parties, isLoading: false, selectedParty}
+        let guest = await this.data.getUserForInvite().then(u => u).catch(e => {
+            console.error('error getting guest information', e);
+            return null;
+        });
+        this.setState(() => {
+            return {parties, isLoading: false, selectedParty, guest}
         });
     }
 
@@ -82,33 +89,57 @@ class App extends React.Component<{}, AppState> {
     }
 
     pickContents(): JSX.Element {
-        window.scroll(0,0);
         if (this.state.isLoading) {
             return (
                 <LoadingSpinner />
             )
         }
+
         if (Path.atRoot()) {
-            let upcoming = this.state.parties.filter(p => p.date > Dates.tomorrow);
-            let past = this.state.parties.filter(p => p.date <= Dates.tomorrow);
-            return (<Dashboard
+            console.log('atRoot', this.state);
+            let userParties = this.state.parties.filter(p => (this.state.guest ? this.state.guest.invitedTo : []).indexOf(p.id) > -1);
+            let upcoming = userParties.filter(p => p.date > Dates.tomorrow);
+            let past = userParties.filter(p => p.date <= Dates.tomorrow);
+            return <Dashboard
                 upcoming={upcoming}
                 past={past}
-            />)
-        }
-        return (
-            <PartyDescription
-                party={this.state.selectedParty}
             />
-        )
+        }
+        if (this.state.selectedParty && this.state.guest) {
+            let userRsvp = (this.state.selectedParty.rsvpList || []).find(r => r.guestId == this.state.guest.id)
+            return <PartyDescription
+                    party={this.state.selectedParty}
+                    userRsvp={userRsvp}
+                    userRsvpSaveHandler={rsvp => this.saveRsvp(rsvp)}
+                />
+        }
+        if (!this.state.guest) {
+            Path.root();
+            return <Dashboard
+                upcoming={[]}
+                past={[]}
+            />
+        }
     }
 
-    routeChanted(partyInfo?: HistoryState) {
+    routeChanged(partyInfo?: HistoryState) {
+        window.scroll(0,0);
         if (partyInfo) {
             this.setState({selectedParty: this.state.parties.find(p => p.id == partyInfo.partyId)});
         } else {
             this.setState({selectedParty: null});
         }
+    }
+
+    async saveRsvp(rsvp: Rsvp) {
+        let newState = {parties: await this.data.postUserRsvp(rsvp)} as any;
+        this.setState(prev => {
+            if (prev.selectedParty) {
+                newState.selectedParty = newState.parties.find(p => prev.selectedParty.id == p.id);
+            }
+            console.log('updating after rsvp save', newState);
+            return newState;
+        })
     }
 }
 
